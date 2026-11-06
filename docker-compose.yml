@@ -1,0 +1,17 @@
+# Local demo only. These example credentials are not suitable for a real company database.
+services:
+  demo-postgres:
+    image: postgres:16-alpine
+    container_name: anomaly-monitor-demo-pg
+    environment:
+      POSTGRES_DB: anomaly_demo
+      POSTGRES_USER: demo_writer
+      POSTGRES_PASSWORD: demo_writer_LOCAL_ONLY
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - ./scripts/postgres_init.sql:/docker-entrypoint-initdb.d/01_demo.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_writer -d anomaly_demo"]
+      interval: 3s
+      retries: 15

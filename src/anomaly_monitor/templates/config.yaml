@@ -1,0 +1,86 @@
+input:
+  source: csv
+  path: demo_wide.csv
+  frequency: D
+source_schema:
+  mode: wide
+  row_grain: period
+  timestamp_column: BusinessDate
+  location_column: StoreID
+  metrics:
+    wash_count: Washes
+    revenue: NetRevenue
+    labor_hours: LaborHours
+    operating_income: OperatingIncome
+    opportunities: Opportunities
+    conversions: Conversions
+calendar:
+  active_weekdays: [0, 1, 2, 3, 4, 5, 6]
+  active_hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+metrics:
+  wash_count:
+    aggregation: sum
+    metric_type: count
+    tests: [predictive_t, robust_mad, poisson, neg_binomial]
+  revenue:
+    aggregation: sum
+    metric_type: amount
+    tests: [predictive_t, robust_mad]
+  labor_hours:
+    aggregation: sum
+    metric_type: amount
+    tests: [predictive_t, robust_mad]
+  operating_income:
+    aggregation: sum
+    metric_type: amount
+    tests: [predictive_t, robust_mad]
+  opportunities:
+    aggregation: sum
+    metric_type: count
+    tests: [predictive_t, poisson]
+  conversions:
+    aggregation: sum
+    metric_type: count
+    tests: [predictive_t, poisson]
+  operating_margin:
+    aggregation: ratio
+    numerator: operating_income
+    denominator: revenue
+    multiplier: 100
+    metric_type: ratio
+    tests: [predictive_t, robust_mad]
+  conversion_rate:
+    aggregation: ratio
+    numerator: conversions
+    denominator: opportunities
+    multiplier: 100
+    metric_type: proportion
+    tests: [predictive_t, robust_mad, binomial]
+  average_ticket:
+    aggregation: ratio
+    numerator: revenue
+    denominator: wash_count
+    multiplier: 1
+    metric_type: ratio
+    tests: [predictive_t, robust_mad]
+analysis:
+  frequencies: [D, W-SUN, MS, QS, YS]
+  windows:
+    D: {short: 8, long: 24}
+    W-SUN: {short: 6, long: 12}
+    MS: {short: 4, long: 10}
+    QS: {short: 4, long: 6}
+    YS: {short: 3, long: 5}
+  min_history_fraction: 1.0
+  alpha: 0.01
+  fdr_alpha: 0.05
+  z_threshold: 3.0
+  shift_detectors:
+    enabled: true
+    horizon: long
+    methods: [cusum, ewma]
+    cusum: {k: 0.5, h: 5.0, score_cap: 2.0, release: 1.0}
+    ewma: {lambda: 0.2, L: 3.0, score_cap: 2.0, release: 0.5}
+output:
+  directory: outputs
+  interactive_html: true

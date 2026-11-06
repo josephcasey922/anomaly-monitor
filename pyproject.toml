@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "anomaly-monitor"
+version = "0.2.1"
+description = "CSV/PostgreSQL operational anomaly monitoring with import wizard and multi-test reports"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Anomaly Monitor Contributors"}]
+keywords = ["anomaly detection", "CUSUM", "time series", "operations", "CSV", "Excel"]
+classifiers = ["Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only", "License :: OSI Approved :: MIT License"]
+dependencies = ["numpy>=1.26", "pandas>=2.2", "scipy>=1.12", "PyYAML>=6.0", "plotly>=5.20", "statsmodels>=0.14"]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.44", "sqlalchemy>=2.0", "psycopg[binary]>=3.2"]
+excel = []
+dev = ["pytest>=8.0", "build>=1.2"]
+
+[project.scripts]
+anomaly-monitor = "anomaly_monitor.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+anomaly_monitor = ["templates/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+outputs/
+*.log
+.DS_Store
+.env
+
+# Credentials, imported datasets, and generated local reports
+.streamlit/secrets.toml
+*.pem
+*.key
+monitor_outputs/
+_demo_run/
+my-monitor-demo/
+demo-run/
